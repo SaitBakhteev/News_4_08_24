@@ -1,0 +1,17 @@
+{% extends 'flatpages/default.html' %}
+{% block content %}
+    {% if request.user.is_authenticated %}
+    
+    <center>    <h3>Вы авторизовались как пользователь {{ request.user.username }}</h3>        
+        <a href="{% url 'main_page' %}"> Перейти в новостной портал </a><br>
+        <form action="{% url 'exit' %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Выйти"/>    
+        </form></center>
+    {% else %}
+     <center>   ВХОД НЕ ВЫПОЛНЕН <br>
+         Для авторизации перейдите <a href="{% url 'account_login' %}">сюда</a></center>
+    
+    {% endif %}
+
+{% endblock content %}

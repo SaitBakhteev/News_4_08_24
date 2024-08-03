@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends 'flatpages/default.html' %}
+    {% load filter %} <!-- загрузка фильтра -->
+    {% load custom_tags %}
+    {% load crispy_forms_tags %}
+    {% load crispy_forms_field %}
+    <meta charset="UTF-8">
+<!-- Изменение заголовочной части базового шаблона default -->
+{% block title %}    
+    <h5> Количество постов: {{ post | length }}</h5>
+{% endblock title %}
+</head>
+<body>
+{% block content %}    
+    <table style="background: #cff4fc"><tr>
+
+            <!-- Форма для оформления подписки -->
+            <td><form action="" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" Value ='Подписаться' name="subscribe">
+                </form></td>
+            <td width="100"></td>
+            <!-- Форма для отмены подписки пользователем -->
+            <td><form action="" method="post">
+                {% csrf_token %}
+                {{ form_subscribe }}
+                <input type="submit" Value ='Отписаться' name="subscribe">
+                </form></td>
+        <td width="100"></td>
+       
+        <td valign="top"><form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            Вы вошли как <br> 
+            <b>{{ request.user }}; pk={{request.user.pk}}<br></b>
+            <input type="submit" value="Выйти">
+        </form></td>
+
+        </tr>
+        </table>
+
+
+    
+    <!-- Верхняя часть страницы под основной шапкой, отображающая вошедшего пользователя -->    
+        <table valign="top" style="background: #adb5bd">
+            <tr><td width="50"></td>
+        </table>    
+        {% block filter %}
+            <div class="align-content-center" style="text-align: center; font-size: xx-large ">                
+                <pre>
+                <a href="search/">Открыть фильтр</a>
+                    <a href="create/"><input type="button" value="Добавить публикацию"/></a>
+                </pre>
+            {% endblock filter %}
+        {% if page_obj.has_previous %} <!-- если открыта не первая страница -->           
+            <a href="?{% url_replace page=1 %}">1</a>
+            {% if page_obj.previous_page_number != 1 and page_obj.previous_page_number != 2 %}
+                ... <!-- многоточие, если номера предыдущей стьраницы и первой страницы отличаются более, чем на 1 -->
+               <!-- отображается ссылка на номер предыдущей соседней страницы -->           
+           {% endif %}
+            
+           {% if page_obj.previous_page_number != 1 %}
+                <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+           {% endif %}
+        {% endif %}
+    
+        {{ page_obj.number }} <!-- отображается номер открытой страницы -->
+
+        <!-- Отображение ссылки на номер следующей соседней страницы -->
+            {% if page_obj.has_next %} <!-- если не достигнута последняя страница -->        
+                <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+                {% if page_obj.next_page_number !=  paginator.num_pages  %} <!-- если соседняя страница не является последней -->                    
+                    ...
+                    <a href="?{% url_replace page=paginator.num_pages %}">{{ paginator.num_pages }}</a>
+                {%  endif %}                
+            {% endif %}
+    </div>
+   
+<!-- Таблица, выводящая новости/статьи -->
+    <!-- Постраничный вывод новостей -->   
+    <table class="table-bordered"  style="background-color: #25cff2; border-color: ghostwhite " cellspacing="10" align="center">
+<tbody> 
+        <tr>
+            <td width="800"><h5>Заголовок поста </h5></td>
+            <td><h5>Дата публикации</h5></td>
+            <td width="350"><h5>Выдержка из статьи</h5></td>
+        </tr>
+
+{% if post %}        
+        <!-- Содержимое ячеек таблицы -->
+        {% for i in post %}
+            <tr>                
+                <td >{{ i.title |censor:'секс'|censor:'Секс'}}</td>
+                <td>{{i.create_time | date:'d.m.Y H:i:s' }}</td>
+                <td>{{ i.content|truncatechars:20 |censor:'секс'|censor:'Секс'}}</td>
+                <td><a href="/news/{{ i.pk }}/">открыть статью</a> </td>
+            </tr>
+        {% endfor %}
+{% endif %}
+
+</tbody></table>
+    {% endblock content %}
+
+</body>
+</html>

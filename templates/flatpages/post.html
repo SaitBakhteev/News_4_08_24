@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends 'flatpages/default.html' %}
+    {% load custom_tags %}
+    {% load filter %}
+    {% load crispy_forms_tags %}
+    {% load crispy_forms_field %}
+
+    <meta charset="UTF-8">
+    {% block title %}
+    <title>Test</title>
+    {% endblock title    %}
+</head>
+
+<body>
+
+{% block content %}
+    <center>
+        <a href="/news/"> <input type="button" value="На главную" /></a>
+    </center><br>
+    
+{% block edit %} <!-- Блок меняющий форму для редактирования -->
+    <!-- Форма для просмотра публикации -->
+    <form action="" method="get">
+        {% csrf_token %}
+            {{ form | crispy }}<br>
+        <a href="edit/"> <input type="button" value="Редактировать" /></a>
+        <a href="delete/"> <input type="button" value="Удалить пост" /></a>
+    </form>
+    {%  endblock edit %}
+{% endblock content %}
+</body>
+
+</html>

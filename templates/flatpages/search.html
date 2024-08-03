@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends 'flatpages/default.html' %}
+    {% load filter %} <!-- загрузка фильтра -->
+    {% load crispy_forms_tags %} <!-- загрузка красивого оформления полей форм-->
+    <meta charset="UTF-8">
+
+    <!-- Изменение заголовочной части базового шаблона default -->
+
+{% block title %}    
+    <h5> Найдено количество постов: {{ post | length }}1</h5>
+{% endblock title %}
+</head>
+
+<body>
+
+{% block filter %}   
+    <div align="center"><a href="/news/"> <input type="button" value="На главную" />    </a></div><br>
+    <!-- если открывается адрес ...news/search.html, то выводится  
+                        таблица, содерджащая фильтр поиска поста -->
+    <form action="" method="get"> <!-- пользовательская форма полей фильтра -->
+        <table class="filtered" style="background-color: #fff3cd">
+            <tr valign="top"><td width="25" height="70" ></td>
+                <td width="400">{{ filter.form.search_title | as_crispy_field }}</td>                
+                <td width="400">{{ filter.form.search_author | as_crispy_field}}</td>
+                <td width="400">{{ filter.form.search_date | as_crispy_field  }}</td>
+                <td width="400" valign="middle" ><input type="submit" value="Поиск поста" /></td>
+            </tr>            
+        </table>
+    </form>
+    
+{% endblock filter %}
+{%  block content %}
+{% include 'flatpages/news.html' %}    
+{%  endblock content %}
+</body>
+</html>

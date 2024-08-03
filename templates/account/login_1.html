@@ -1,0 +1,52 @@
+<!-- УРЕЗАННЫЙ ВАРИАНТ ШАБЛОНА "accounts/login_1.html", ОТЛИЧАЮЩИЙСЯ ОТ ИСХОДНОГО ВАРИАНТА 
+В УСТАНОВОЧНОМ ПАКЕТЕ DJANGO-ALLAUTH -->
+
+{% extends 'flatpages/news.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load allauth account %}
+{% block head_title %}
+    {% trans "ВХОД" %}
+{% endblock head_title %}
+{% block content %}    
+    {% element h1 %}
+        {% trans "ВХОД" %}
+    {% endelement %}
+    {% if not SOCIALACCOUNT_ONLY %}
+        {% setvar link %}
+            <a href="{{ signup_url }}">
+            {% endsetvar %}
+            {% setvar end_link %}
+            </a>
+        {% endsetvar %}
+        {% element p %}
+            Если у Вас отсутствует аккаунт, то можете зарегистрироваться по этой <a href="{% url 'signup' %}"> ссылке. </a>
+        {% endelement %}
+        {% url 'account_login' as login_url %}
+        {% element form form=form method="post" action=login_url tags="entrance,login" %}
+            {% slot body %}
+                {% csrf_token %}
+                {{ form.login.label }} {{ form.login }}<br>
+                {{ form.password.label }} {{ form.password }}
+                {{ redirect_field }}
+            {% endslot %}
+            {% slot actions %}
+                {% element button type="submit" tags="prominent,login" %}
+                    {% trans "Войти" %}
+                {% endelement %}
+            {% endslot %}
+        {% endelement %}
+    {% endif %}
+    {% if LOGIN_BY_CODE_ENABLED %}
+        {% element hr %}
+        {% endelement %}
+        {% element h2 %}
+            {% element button href=request_login_code_url tags="prominent,login,secondary" %}
+                {% trans "Mail me a sign-in code" %}
+            {% endelement %}
+        {% endelement %}
+    {% endif %}
+    {% if SOCIALACCOUNT_ENABLED %}
+        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+    {% endif %}
+{% endblock content %}
